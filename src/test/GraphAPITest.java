@@ -128,6 +128,84 @@ public class GraphAPITest {
 		
 		Assert.assertEquals(expected, real);
 	}
+	
+	@Test
+	public void testGraphRepresentationAL() {
+		try {
+			Graph graph = graphManipulator.readGraph(GRAPH_SAMPLE_PATH);
+			
+			String answer = this.graphManipulator.graphRepresentation(graph, "AL");
+			
+			String expectedBFS =  "1-2 \n"  +
+								  "2-1 3 \n" +
+								  "3-2 4 \n" +
+								  "4-3 5 \n" +
+								  "5-4 \n";
+			
+			Assert.assertEquals(expectedBFS, answer);			
+		} catch (IOException e) {
+			fail("Error in reading file");
+		}
+	}
+	
+	@Test
+	public void testGraphRepresentationWeightAM() {
+		try {
+			Graph graph = graphManipulator.readWeightedGraph(GRAPH_SAMPLE_WITH_WEIGHT_PATH);
+			
+			String answer = this.graphManipulator.graphRepresentation(graph, "AM");
+			
+			String expectedBFS =  "  1 2 3 4 5\n" + 
+					  "1 0 0.1 0 0 1 \n" +
+					  "2 0.1 0 0 0 0.2 \n" +
+					  "3 0 0 0 -9.5 5 \n" +
+					  "4 0 0 -9.5 0 2.3 \n" +
+					  "5 1 0.2 5 2.3 0 \n";
+			
+			Assert.assertEquals(expectedBFS, answer);			
+		} catch (IOException e) {
+			fail("Error in reading file");
+		}
+	}
+	
+	@Test
+	public void testGraphRepresentationWeightAL() {
+		try {
+			Graph graph = graphManipulator.readWeightedGraph(GRAPH_SAMPLE_WITH_WEIGHT_PATH);
+			
+			String answer = this.graphManipulator.graphRepresentation(graph, "AL");
+			
+			String expectedBFS =  "1-2(0.1) 5(1) \n" +
+								  "2-1(0.1) 5(0.2) \n" +
+								  "3-4(-9.5) 5(5) \n" +
+								  "4-3(-9.5) 5(2.3) \n" +
+								  "5-1(1) 2(0.2) 3(5) 4(2.3) \n";
+			
+			Assert.assertEquals(expectedBFS, answer);
+		} catch (IOException e) {
+			fail("Error in reading file");
+		}
+	}
+	
+	@Test
+	public void testGraphRepresentationAM() {
+		try {
+			Graph graph = graphManipulator.readGraph(GRAPH_SAMPLE_PATH);
+			
+			String answer = this.graphManipulator.graphRepresentation(graph, "AM");
+			
+			String expectedBFS =  "  1 2 3 4 5\n" +
+								  "1 0 1 0 0 0 \n" +
+								  "2 1 0 1 0 0 \n" +
+								  "3 0 1 0 1 0 \n" +
+								  "4 0 0 1 0 1 \n" +
+								  "5 0 0 0 1 0 \n";
+			
+			Assert.assertEquals(expectedBFS, answer);
+		} catch (IOException e) {
+			fail("Error in reading file");
+		}
+	}
 		
 	private Graph mockGraph() {
 		Graph graph = new Graph(5);
