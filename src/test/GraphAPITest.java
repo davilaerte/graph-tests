@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,6 +77,17 @@ public class GraphAPITest {
 	}
 	
 	@Test
+	public void getVertexNumberWithBigGraph() {
+		int numberVertex = 1000;
+		Graph graphOne = mockGraphDisconnected(numberVertex);
+		int expectedNumberVertex;
+		
+		expectedNumberVertex = this.graphManipulator.getVertexNumber(graphOne);
+				
+		Assert.assertEquals(expectedNumberVertex, numberVertex);
+	}
+	
+	@Test
 	public void testGetEdgeNumber() {
 		Graph graphOne = mockGraph();
 		int expectedNumberEdges;
@@ -95,6 +107,19 @@ public class GraphAPITest {
 		
 		expectedNumberEdges = GraphUtils.getEdgeNumber(graphOne);
 		numberAddedEdges = 2;
+		
+		Assert.assertEquals(expectedNumberEdges, numberAddedEdges);
+	}
+	
+	@Test
+	public void testGetEdgeNumberWithBigGraph() {
+		int numberVertex = 1000;
+		Graph graphOne = mockGraphDisconnected(numberVertex);
+		int expectedNumberEdges;
+		int numberAddedEdges;
+		
+		expectedNumberEdges = GraphUtils.getEdgeNumber(graphOne);
+		numberAddedEdges = 0;
 		
 		Assert.assertEquals(expectedNumberEdges, numberAddedEdges);
 	}
@@ -180,6 +205,33 @@ public class GraphAPITest {
 	}
 	
 	@Test
+	public void testShortestPathWithWeight() {
+		Graph graphOne = mockGraphWithWeightTwo();
+		int firstVertex = 1;
+		int thirdVertex = 5;
+
+		String result = this.graphManipulator.shortestPath(graphOne, firstVertex, thirdVertex);
+		String expectedResult = "[1, 2, 5]";
+
+		Assert.assertEquals(result, expectedResult);
+	}
+	
+	@Test
+	public void testShortestPathWithNegativeWeight() {
+		Graph graphOne = mockGraphWithWeight();
+		int firstVertex = 1;
+		int thirdVertex = 5;
+
+		/*
+		 * The shortestPath method does not work with negative weights
+		 */
+		String result = this.graphManipulator.shortestPath(graphOne, firstVertex, thirdVertex);
+		String expectedResult = "[1, 2, 5]";
+
+		Assert.assertEquals(result, expectedResult);
+	}
+	
+	@Test
 	public void testDisconnectedGraph() {
 		Graph graph = mockGraphDisconnected();
 		boolean expected = false;
@@ -189,8 +241,28 @@ public class GraphAPITest {
 	}
 	
 	@Test
+	public void testDisconnectedBigGraph() {
+		int numberVertex = 1000;
+		Graph graph = mockGraphDisconnected(numberVertex);
+		boolean expected = false;
+		boolean real = this.graphManipulator.connected(graph);
+		
+		Assert.assertEquals(expected, real);
+	}
+	
+	@Test
 	public void testConnectedGraph() {
 		Graph graph = mockGraphFigureOne();
+		boolean expected = true;
+		boolean real = this.graphManipulator.connected(graph);
+		
+		Assert.assertEquals(expected, real);
+	}
+	
+	@Test
+	public void testConnectedBigGraph() {
+		int numberVertex = 1000;
+		Graph graph = mockGraphConnected(numberVertex);
 		boolean expected = true;
 		boolean real = this.graphManipulator.connected(graph);
 		
@@ -268,7 +340,7 @@ public class GraphAPITest {
 								  "3 0 1 0 1 0 \n" +
 								  "4 0 0 1 0 1 \n" +
 								  "5 0 0 0 1 0 \n";
-			
+	
 			Assert.assertEquals(expectedBFS, answer);
 		} catch (IOException e) {
 			fail("Error in reading file");
@@ -367,6 +439,24 @@ public class GraphAPITest {
 		graph.addEdge(3, 4);
 		graph.addEdge(4, 3);
 		
+		return graph;
+	}
+	
+	private Graph mockGraphConnected(int numVertex) {
+		Graph graph = new Graph(numVertex);
+		
+		for (int i = 1; i <= numVertex; i++) {
+			for (int j = 1; j <= numVertex; j++) {
+				graph.addEdge(i, j);
+			}
+		}
+		
+		return graph;
+	}
+	
+	private Graph mockGraphDisconnected(int numVertex) {
+		Graph graph = new Graph(numVertex);
+	
 		return graph;
 	}
 }
