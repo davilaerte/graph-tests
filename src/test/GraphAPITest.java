@@ -232,6 +232,21 @@ public class GraphAPITest {
 	}
 	
 	@Test
+	public void testShortestPathNonexistent() {
+		Graph graphOne = mockGraphDisconnected();
+		int firstVertex = 1;
+		int thirdVertex = 3;
+		
+		try {
+			this.graphManipulator.shortestPath(graphOne, firstVertex, thirdVertex);
+			
+			fail("Should throw an exception");
+		} catch (Exception e) {
+			Assert.assertEquals(e.getMessage(), "There is no path between v1 and v2");
+		}
+	}
+		
+	@Test
 	public void testDisconnectedGraph() {
 		Graph graph = mockGraphDisconnected();
 		boolean expected = false;
